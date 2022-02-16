@@ -1,0 +1,64 @@
+{\rtf1\ansi\deff0 {\fonttbl{\f0\fnil Garamond;}}
+{\info {\author .}{\company .}{\title .}}
+\deflang1033\plain\fs20
+{\footer\pard\qc\plain\f0\fs20\chpgn\par}
+{
+{\b\qc\line Tabulation of female fulltime  }{\par}
+{\trowd\trgaph108\trleft-108
+\clvmgf \clvertalb \clbrdrr\brdrw10\brdrs \clbrdrt\brdrw10\brdrs \clbrdrb\brdrw10\brdrs\cellx2318
+\fs20\pard\intbl\ql {=1 if female worker}\cell
+\clmgf \clbrdrt\brdrw10\brdrs \clbrdrb\brdrw10\brdrs\cellx3318
+\fs20\pard\intbl\qc {type of worker, fulltime or part time}\cell
+\clmrg \clbrdrt\brdrw10\brdrs \clbrdrb\brdrw10\brdrs\cellx4318
+\fs20\pard\intbl\qr {}\cell
+\clmrg \clbrdrt\brdrw10\brdrs \clbrdrb\brdrw10\brdrs\cellx5318
+\fs20\pard\intbl\qr {}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\clvmrg  \clvertalb \clbrdrr\brdrw10\brdrs \cellx2318
+\fs20\pard\intbl\ql {}\cell
+\cellx3318
+\fs20\pard\intbl\qr {part time worker}\cell
+\cellx4318
+\fs20\pard\intbl\qr {fulltime worker}\cell
+\cellx5318
+\fs20\pard\intbl\qr {Total}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\clbrdrr\brdrw10\brdrs \clbrdrt\brdrw25\brdrs\cellx2318
+\fs20\pard\intbl\ql {male}\cell
+\clbrdrt\brdrw25\brdrs\cellx3318
+\fs20\pard\intbl\qr {151}\cell
+\clbrdrt\brdrw25\brdrs\cellx4318
+\fs20\pard\intbl\qr {117}\cell
+\clbrdrt\brdrw25\brdrs\cellx5318
+\fs20\pard\intbl\qr {268}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\clbrdrr\brdrw10\brdrs \cellx2318
+\fs20\pard\intbl\ql {female}\cell
+\cellx3318
+\fs20\pard\intbl\qr {154}\cell
+\cellx4318
+\fs20\pard\intbl\qr {88}\cell
+\cellx5318
+\fs20\pard\intbl\qr {242}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\clbrdrr\brdrw10\brdrs \clbrdrt\brdrw10\brdrs\cellx2318
+\fs20\pard\intbl\ql {Total}\cell
+\clbrdrt\brdrw10\brdrs\cellx3318
+\fs20\pard\intbl\qr {305}\cell
+\clbrdrt\brdrw10\brdrs\cellx4318
+\fs20\pard\intbl\qr {205}\cell
+\clbrdrt\brdrw10\brdrs\cellx5318
+\fs20\pard\intbl\qr {510}\cell
+\row}
+{\trowd\trgaph108\trleft-108
+\clbrdrt\brdrw25\brdrs\cellx5318
+\fs20\pard\intbl\ql {}\cell
+\row}
+
+
+\writepositionforappend
+}}

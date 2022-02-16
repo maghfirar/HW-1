@@ -1,0 +1,437 @@
+-----------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/macbook/Documents/Work/SP6015/HW 1/output/logs/HW1_16_Feb_2022_22_26_56.log
+  log type:  text
+ opened on:  16 Feb 2022, 22:26:56
+
+. 
+. * 3 Set directory and use dataset (locate the directory of HW 1 folder)
+. cd "/Users/macbook/Documents/Work/SP6015/HW 1"
+/Users/macbook/Documents/Work/SP6015/HW 1
+
+. 
+. * 4 Define local macro
+. local input_data "./data/ps1_psid2003.dta"
+
+. local output_data "./data/ps1_psid2003_edited.dta"
+
+. 
+. * 5 Load data
+. use `input_data', clear
+
+. 
+. * 6,7 Create new variable
+. generate totalhours = hours * weeks
+
+. generate wagerate = salary/totalhours
+
+. 
+. * 8,9 Create categorical variable
+. gen fulltime=0
+
+. replace fulltime=1 if weeks>=48 & hours>=35
+(205 real changes made)
+
+. 
+. gen female=1
+
+. replace female=0 if sex==1
+(268 real changes made)
+
+. 
+. * 10 Create log wage
+. generate logwage = log(wagerate)
+
+. 
+. * 11 Create label
+. label variable totalhours "hours worked per week multiplied by number of weeks worked"
+
+. label variable wagerate "salary divided by the total hours worked"
+
+. label variable logwage "the logarithmic value of the wage"
+
+. label variable fulltime "type of worker, fulltime or part time"
+
+. label define fulltime 0 "part time worker" 1 "fulltime worker"
+
+. label variable female "=1 if female worker"
+
+. label define female 0 "male" 1 "female"
+
+. 
+. * 12 Create label values
+. label values fulltime fulltime
+
+. label values female female
+
+. 
+. * 13 Produce summary table1
+. outreg2 using "output/tables/table1.doc", replace sum(log) ///
+> keep(age educ weeks hours salary wagerate logwage)
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+     famid68 |        510    2888.275    1974.112         10       6864
+         pid |        510    69.10588    69.26488          1        200
+         sex |        510     1.47451    .4998401          1          2
+         age |        510    27.13922    11.28842         18         88
+        educ |        510    12.57647    2.821653          0         17
+-------------+---------------------------------------------------------
+       weeks |        510    39.48824     16.2374          1         52
+       hours |        510    31.69804    12.59256          3         72
+      salary |        510    15068.29    15454.56         50      90000
+  totalhours |        510    1297.239    789.4712         12       3456
+    wagerate |        510    13.42965     26.2417   .0396825   333.3333
+-------------+---------------------------------------------------------
+    fulltime |        510    .4019608    .4907755          0          1
+      female |        510    .4745098    .4998401          0          1
+     logwage |        510    2.197291    .7879197  -3.226844   5.809143
+
+
+output/tables/table1.doc
+dir : seeout
+
+. 
+. * 14 Produce histogram
+. histogram salary
+(bin=22, start=50, width=4088.6364)
+
+. graph export "output/figures/figure_1_histogram_salary.png", replace
+(file /Users/macbook/Documents/Work/SP6015/HW 1/output/figures/figure_1_histogram_salary.png written 
+> in PNG format)
+
+. histogram logwage
+(bin=22, start=-3.2268441, width=.41072669)
+
+. graph export "output/figures/figure_2_histogram_logwage.png", replace
+(file /Users/macbook/Documents/Work/SP6015/HW 1/output/figures/figure_2_histogram_logwage.png written
+>  in PNG format)
+
+. 
+. * 15 Produce scatter plot
+. twoway (scatter logwage age, lcolor(emidblue) lwidth(medthick)) 
+
+. graph export "output/figures/figure_3_scatter_age_logwage.png", replace 
+(file /Users/macbook/Documents/Work/SP6015/HW 1/output/figures/figure_3_scatter_age_logwage.png writt
+> en in PNG format)
+
+. 
+. * 16 Produce twoway table2
+. asdoc tabulate female fulltime, save(table0.doc)
+
+     =1 if |    type of worker,
+    female | fulltime or part time
+    worker | part time  fulltime  |     Total
+-----------+----------------------+----------
+      male |       151        117 |       268 
+    female |       154         88 |       242 
+-----------+----------------------+----------
+     Total |       305        205 |       510 
+Click to Open File:  table0.doc
+
+. copy table0.doc "output/tables/table2.doc", replace
+
+. erase "table0.doc"
+
+. 
+. * 17 Save edited data
+. save `output_data', replace
+file ./data/ps1_psid2003_edited.dta saved
+
+. 
+. * 18 Create regression local macro
+. local depvar logwage
+
+. local indepvar1 female
+
+. local indepvar2 female age
+
+. local indepvar3 female age educ
+
+. local indepvar4 female age educ fulltime
+
+. 
+. * 18 Produce regression table3 with robust
+. reg `depvar' `indepvar1', robust
+
+Linear regression                               Number of obs     =        510
+                                                F(1, 508)         =       2.45
+                                                Prob > F          =     0.1184
+                                                R-squared         =     0.0048
+                                                Root MSE          =     .78681
+
+------------------------------------------------------------------------------
+             |               Robust
+     logwage |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      female |  -.1090065   .0696934    -1.56   0.118    -.2459293    .0279163
+       _cons |   2.249015   .0485597    46.31   0.000     2.153613    2.344418
+------------------------------------------------------------------------------
+
+. outreg2 using "output/tables/table3.doc", replace ctitle(Model 1)
+output/tables/table3.doc
+dir : seeout
+
+. reg `depvar' `indepvar2', robust
+
+Linear regression                               Number of obs     =        510
+                                                F(2, 507)         =      33.17
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0975
+                                                Root MSE          =     .75002
+
+------------------------------------------------------------------------------
+             |               Robust
+     logwage |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      female |  -.1700327    .067121    -2.53   0.012    -.3019022   -.0381631
+         age |   .0214198   .0026665     8.03   0.000     .0161811    .0266585
+       _cons |   1.696655   .0847852    20.01   0.000     1.530082    1.863229
+------------------------------------------------------------------------------
+
+. outreg2 using "output/tables/table3.doc", append ctitle(Model 2)
+output/tables/table3.doc
+dir : seeout
+
+. reg `depvar' `indepvar3', robust
+
+Linear regression                               Number of obs     =        510
+                                                F(3, 506)         =      27.17
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1135
+                                                Root MSE          =     .74407
+
+------------------------------------------------------------------------------
+             |               Robust
+     logwage |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      female |  -.1755353   .0667826    -2.63   0.009    -.3067407     -.04433
+         age |   .0216441   .0025202     8.59   0.000     .0166927    .0265954
+        educ |   .0353564   .0114528     3.09   0.002     .0128556    .0578572
+       _cons |   1.248523   .1684315     7.41   0.000     .9176114    1.579434
+------------------------------------------------------------------------------
+
+. outreg2 using "output/tables/table3.doc", append ctitle(Model 3)
+output/tables/table3.doc
+dir : seeout
+
+. reg `depvar' `indepvar4', robust
+
+Linear regression                               Number of obs     =        510
+                                                F(4, 505)         =      22.75
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1179
+                                                Root MSE          =     .74296
+
+------------------------------------------------------------------------------
+             |               Robust
+     logwage |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      female |  -.1623341   .0678176    -2.39   0.017    -.2955734   -.0290948
+         age |   .0199511   .0026292     7.59   0.000     .0147856    .0251166
+        educ |   .0345962   .0114684     3.02   0.003     .0120645    .0571279
+    fulltime |   .1134394   .0656706     1.73   0.085    -.0155819    .2424607
+       _cons |   1.252167   .1685941     7.43   0.000      .920935    1.583399
+------------------------------------------------------------------------------
+
+. outreg2 using "output/tables/table3.doc", append ctitle(Model 4)
+output/tables/table3.doc
+dir : seeout
+
+. 
+. * 19 Produce regression table3 with conventional standard error
+. reg `depvar' `indepvar1'
+
+      Source |       SS           df       MS      Number of obs   =       510
+-------------+----------------------------------   F(1, 508)       =      2.44
+       Model |   1.5110701         1   1.5110701   Prob > F        =    0.1188
+    Residual |  314.485032       508  .619065023   R-squared       =    0.0048
+-------------+----------------------------------   Adj R-squared   =    0.0028
+       Total |  315.996102       509  .620817489   Root MSE        =    .78681
+
+------------------------------------------------------------------------------
+     logwage |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      female |  -.1090065   .0697715    -1.56   0.119    -.2460827    .0280698
+       _cons |   2.249015   .0480619    46.79   0.000     2.154591     2.34344
+------------------------------------------------------------------------------
+
+. outreg2 using "output/tables/table4.doc", replace ctitle(Model 1)
+output/tables/table4.doc
+dir : seeout
+
+. reg `depvar' `indepvar2'
+
+      Source |       SS           df       MS      Number of obs   =       510
+-------------+----------------------------------   F(2, 507)       =     27.37
+       Model |  30.7963652         2  15.3981826   Prob > F        =    0.0000
+    Residual |  285.199737       507  .562524135   R-squared       =    0.0975
+-------------+----------------------------------   Adj R-squared   =    0.0939
+       Total |  315.996102       509  .620817489   Root MSE        =    .75002
+
+------------------------------------------------------------------------------
+     logwage |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      female |  -.1700327   .0670447    -2.54   0.012    -.3017522   -.0383131
+         age |   .0214198   .0029687     7.22   0.000     .0155874    .0272522
+       _cons |   1.696655    .089216    19.02   0.000     1.521377    1.871934
+------------------------------------------------------------------------------
+
+. outreg2 using "output/tables/table4.doc", append ctitle(Model 2)
+output/tables/table4.doc
+dir : seeout
+
+. reg `depvar' `indepvar3'
+
+      Source |       SS           df       MS      Number of obs   =       510
+-------------+----------------------------------   F(3, 506)       =     21.59
+       Model |  35.8560956         3  11.9520319   Prob > F        =    0.0000
+    Residual |  280.140006       506  .553636376   R-squared       =    0.1135
+-------------+----------------------------------   Adj R-squared   =    0.1082
+       Total |  315.996102       509  .620817489   Root MSE        =    .74407
+
+------------------------------------------------------------------------------
+     logwage |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      female |  -.1755353   .0665378    -2.64   0.009    -.3062597   -.0448109
+         age |   .0216441   .0029461     7.35   0.000      .015856    .0274321
+        educ |   .0353564   .0116954     3.02   0.003     .0123788     .058334
+       _cons |   1.248523   .1726493     7.23   0.000     .9093249     1.58772
+------------------------------------------------------------------------------
+
+. outreg2 using "output/tables/table4.doc", append ctitle(Model 3)
+output/tables/table4.doc
+dir : seeout
+
+. reg `depvar' `indepvar4'
+
+      Source |       SS           df       MS      Number of obs   =       510
+-------------+----------------------------------   F(4, 505)       =     16.87
+       Model |  37.2407978         4  9.31019945   Prob > F        =    0.0000
+    Residual |  278.755304       505  .551990701   R-squared       =    0.1179
+-------------+----------------------------------   Adj R-squared   =    0.1109
+       Total |  315.996102       509  .620817489   Root MSE        =    .74296
+
+------------------------------------------------------------------------------
+     logwage |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      female |  -.1623341   .0669596    -2.42   0.016    -.2938878   -.0307803
+         age |   .0199511   .0031299     6.37   0.000     .0138019    .0261002
+        educ |   .0345962   .0116879     2.96   0.003     .0116333    .0575591
+    fulltime |   .1134394   .0716229     1.58   0.114    -.0272761    .2541549
+       _cons |   1.252167   .1724079     7.26   0.000     .9134422    1.590892
+------------------------------------------------------------------------------
+
+. outreg2 using "output/tables/table4.doc", append ctitle(Model 4)
+output/tables/table4.doc
+dir : seeout
+
+. 
+. * 20 Linearity diagnostics with acprplot on logwage and age
+. quietly reg logwage age
+
+. acprplot age, lowess
+
+. graph export "output/figures/figure_4_acprplot_age.png", replace
+(file /Users/macbook/Documents/Work/SP6015/HW 1/output/figures/figure_4_acprplot_age.png written in P
+> NG format)
+
+. 
+. * 21 Multicolinearity diagnostics with
+. * (1) Pairwise correlation matrix
+. pwcorr `depvar' `indepvar4', star(0.05) sig
+
+             |  logwage   female      age     educ fulltime
+-------------+---------------------------------------------
+     logwage |   1.0000 
+             |
+             |
+      female |  -0.0692   1.0000 
+             |   0.1188
+             |
+         age |   0.2933*  0.1262*  1.0000 
+             |   0.0000   0.0043
+             |
+        educ |   0.1171*  0.0244  -0.0219   1.0000 
+             |   0.0081   0.5830   0.6218
+             |
+    fulltime |   0.1754* -0.0743   0.3275*  0.0281   1.0000 
+             |   0.0001   0.0938   0.0000   0.5263
+             |
+
+. 
+. * (2) Correlation matrix graph
+. graph matrix `depvar' `indepvar4', half
+
+. graph export "output/figures/figure_5_correlation_matrix_graph.png", replace
+(file /Users/macbook/Documents/Work/SP6015/HW 1/output/figures/figure_5_correlation_matrix_graph.png 
+> written in PNG format)
+
+. 
+. * (3) Variance Inflation Factor (VIF)
+. quietly reg `depvar' `indepvar4'
+
+. vif
+
+    Variable |       VIF       1/VIF  
+-------------+----------------------
+         age |      1.15    0.868754
+    fulltime |      1.14    0.877697
+      female |      1.03    0.968112
+        educ |      1.00    0.997089
+-------------+----------------------
+    Mean VIF |      1.08
+
+. 
+. * 22 Homoscedasticity diagnostics with
+. * (1) Breusch-Pagan test
+. quietly reg `depvar' `indepvar4'
+
+. estat hettest
+
+Breusch-Pagan / Cook-Weisberg test for heteroskedasticity 
+         Ho: Constant variance
+         Variables: fitted values of logwage
+
+         chi2(1)      =    12.08
+         Prob > chi2  =   0.0005
+
+. 
+. * (2) Residual vs Fitted plot
+. rvfplot, yline(0)
+
+. graph export "output/figures/figure_6_residual_fitted_plot.png", replace
+(file /Users/macbook/Documents/Work/SP6015/HW 1/output/figures/figure_6_residual_fitted_plot.png writ
+> ten in PNG format)
+
+. 
+. * 23 Omitted variable bias diagnostics with RESET
+. quietly reg `depvar' `indepvar4'
+
+. ovtest
+
+Ramsey RESET test using powers of the fitted values of logwage
+       Ho:  model has no omitted variables
+                 F(3, 502) =      2.30
+                  Prob > F =      0.0767
+
+. 
+. * 24 Error normality diagnostics
+. quietly reg `depvar' `indepvar4', robust
+
+. predict e, resid 
+
+. hist e, kdensity normal
+(bin=22, start=-5.230608, width=.40921356)
+
+. graph export "output/figures/figure_7_error_normality_plot.png", replace
+(file /Users/macbook/Documents/Work/SP6015/HW 1/output/figures/figure_7_error_normality_plot.png writ
+> ten in PNG format)
+
+. 
+. log close
+      name:  <unnamed>
+       log:  /Users/macbook/Documents/Work/SP6015/HW 1/output/logs/HW1_16_Feb_2022_22_26_56.log
+  log type:  text
+ closed on:  16 Feb 2022, 22:27:12
+-----------------------------------------------------------------------------------------------------
